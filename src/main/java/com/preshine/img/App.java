@@ -21,7 +21,7 @@ public class App {
 
 
     public static void main(final String[] args) throws Exception {
-        Integer port = 8080;
+        Integer port = 8082;
         if (args != null && args.length > 0) {
             if ("-p".equals(args[0])) {
                 port = Integer.valueOf(args[1]);

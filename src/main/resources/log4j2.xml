@@ -113,7 +113,7 @@ when using <asyncLogger> or <asyncRoot>. -->
 
     <loggers>
         <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
-        <logger name="org.springframework" level="debug"></logger>
+        <logger name="org.springframework" level="info"></logger>
         <logger name="org.mybatis" level="info"></logger>
 
         <!-- 自定义要打日志的类路径 additivity 设置成不使用root的，

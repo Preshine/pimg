@@ -42,12 +42,12 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
                         return map;
                     }).collect(Collectors.toList());
 
-            getTreeData(null, result, treeData);
+            getTreeData(0, result, treeData);
         }
         return treeData;
     }
 
-    private List<Map<String, Object>> getTreeData(String parentId, List<Map<String, Object>> resources, List<Map<String, Object>> treeData) {
+    private List<Map<String, Object>> getTreeData(Integer parentId, List<Map<String, Object>> resources, List<Map<String, Object>> treeData) {
 
         return resources.stream()
                 .filter( res -> (parentId == null && res.get("parentId") == null) || ( parentId != null && parentId.equals(res.get("parentId"))))
@@ -57,7 +57,7 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
                             .collect(Collectors.toList());
                     if (childrenList.size() > 0) {
                         Map<String, Object> childMap = new HashMap<>();
-                        if (parentId == null) {
+                        if (parentId == 0) {
                             treeData.add(childMap);
                         }
                         childMap.put("id", res.get("id"));
@@ -66,10 +66,10 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
                         childMap.put("key", res.get("key"));
                         childMap.put("value", res.get("value"));
                         childMap.put("label", res.get("label"));
-                        childMap.put("children", getTreeData(res.get("id").toString(), resources, treeData));
+                        childMap.put("children", getTreeData((Integer)res.get("id"), resources, treeData));
                         return childMap;
                     } else {
-                        if (parentId == null) {
+                        if (parentId == 0) {
                             treeData.add(res);
                         }
                         return res;

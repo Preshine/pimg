@@ -24,7 +24,7 @@ public class Resources extends Model<Resources> {
     @TableField("res_code")
     private String resCode;
     @TableField("res_type")
-    private Integer resType;
+    private String resType;
     private String name;
     private String value;
     @TableField("parent_id")
@@ -58,11 +58,11 @@ public class Resources extends Model<Resources> {
         this.resCode = resCode;
     }
 
-    public Integer getResType() {
+    public String getResType() {
         return resType;
     }
 
-    public void setResType(Integer resType) {
+    public void setResType(String resType) {
         this.resType = resType;
     }
 

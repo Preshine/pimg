@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * @since 2018-11-13
  */
 @Controller
-@RequestMapping("/role")
+@RequestMapping("/api/role")
 public class RoleController {
 
     @Autowired

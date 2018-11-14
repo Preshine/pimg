@@ -26,7 +26,7 @@ import java.util.Map;
  * @since 2018-11-12
  */
 @Controller
-@RequestMapping("/resources")
+@RequestMapping("/api/resources")
 public class ResourcesController {
 
     @Autowired
@@ -50,7 +50,7 @@ public class ResourcesController {
         String var1 = (String)requestBody.get("var1");
         String var2 = (String)requestBody.get("var2");
         String var3 = (String)requestBody.get("var3");
-        Integer resType = (Integer)requestBody.get("resType");
+        String resType = (String)requestBody.get("resType");
         Resources resources;
         String msg;
         if (resId != null) {
@@ -61,7 +61,7 @@ public class ResourcesController {
             msg = "新增资源[" + name + "]成功！";
             resources = new Resources();
         }
-        if (requestBody.get("parentId") != null) {
+        if (requestBody.get("parentId") != null && !requestBody.get("parentId").equals("")) {
             Integer parentId = Integer.valueOf((String)requestBody.get("parentId"));
             resources.setParentId(parentId);
         } else {

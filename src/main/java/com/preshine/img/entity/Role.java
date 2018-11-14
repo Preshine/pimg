@@ -22,6 +22,7 @@ public class Role extends Model<Role> {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     private String name;
+    private String description;
     private Integer status;
     @TableField("create_time")
     private Date createTime;
@@ -59,6 +60,14 @@ public class Role extends Model<Role> {
         this.createTime = createTime;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -70,6 +79,7 @@ public class Role extends Model<Role> {
         ", id=" + id +
         ", name=" + name +
         ", status=" + status +
+        ", description=" + description +
         ", createTime=" + createTime +
         "}";
     }
