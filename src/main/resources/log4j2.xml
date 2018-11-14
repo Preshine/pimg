@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Don't forget to set system property
+-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+to make all loggers asynchronous. -->
+<!--System.setProperty("Log4jContextSelector", "org.apache.logging.log4j.core.async.AsyncLoggerContextSelector");-->
+<!-- No need to set system property "Log4jContextSelector" to any value
+when using <asyncLogger> or <asyncRoot>. -->
+<!-- 设置log4j2的自身log级别为warn -->
+<!-- OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="LOG_HOME">D:/LOG1</Property>
+    </Properties>
+
+    <appenders>
+        <console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%d{HH:mm:ss.SSS}] [%p] [%t] - %l - %m%n"/>
+        </console>
+
+        <RollingFile name="RollingFileDebug" fileName="${LOG_HOME}/debug.log"
+                     filePattern="${LOG_HOME}/debug-%d{yyyy-MM-dd}-%i.log">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <Filters>
+                <ThresholdFilter level="DEBUG"/>
+                <ThresholdFilter level="INFO" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+            <PatternLayout pattern="[%d{HH:mm:ss.SSS}] [%p] [%t] - %l - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10">
+                <Delete basePath="${LOG_HOME}" maxDepth="2">
+                    <IfFileName glob="*.log" />
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <RollingFile name="RollingFileInfo" fileName="${LOG_HOME}/info.log"
+                     filePattern="${LOG_HOME}/info-%d{yyyy-MM-dd}-%i.log">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <Filters>
+                <ThresholdFilter level="INFO"/>
+                <ThresholdFilter level="WARN" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+            <PatternLayout pattern="[%d{HH:mm:ss.SSS}] [%p] [%t] - %l - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10">
+                <Delete basePath="${LOG_HOME}" maxDepth="2">
+                    <IfFileName glob="*.log" />
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <RollingFile name="RollingFileWarn" fileName="${LOG_HOME}/warn.log"
+                     filePattern="${LOG_HOME}/warn-%d{yyyy-MM-dd}-%i.log">
+            <Filters>
+                <ThresholdFilter level="WARN"/>
+                <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="NEUTRAL"/>
+            </Filters>
+            <PatternLayout pattern="[%d{HH:mm:ss.SSS}] [%p] [%t] - %l - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10">
+                <Delete basePath="${LOG_HOME}" maxDepth="2">
+                    <IfFileName glob="*.log" />
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <RollingFile name="RollingFileError" fileName="${LOG_HOME}/error.log"
+                     filePattern="${LOG_HOME}/error-%d{yyyy-MM-dd}-%i.log">
+            <ThresholdFilter level="ERROR"/>
+            <PatternLayout pattern="[%d{HH:mm:ss.SSS}] [%p] [%t] - %l - %m%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10">
+                <Delete basePath="${LOG_HOME}" maxDepth="2">
+                    <IfFileName glob="*.log" />
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <!-- 异步的 appender -->
+        <Async name="asyncConsole" includeLocation="true" >
+            <AppenderRef ref="Console"/>
+        </Async>
+
+        <Async name="asyncRollingFileInfo" includeLocation="true" >
+            <AppenderRef ref="RollingFileError"/>
+        </Async>
+
+        <Async name="asyncRollingFileWarn" includeLocation="true" >
+            <AppenderRef ref="RollingFileError"/>
+        </Async>
+
+        <Async name="asyncRollingFileError" includeLocation="true">
+            <AppenderRef ref="RollingFileError"/>
+        </Async>
+
+    </appenders>
+
+    <loggers>
+        <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
+        <logger name="org.springframework" level="debug"></logger>
+        <logger name="org.mybatis" level="info"></logger>
+
+        <!-- 自定义要打日志的类路径 additivity 设置成不使用root的，
+            否则可能先用自己的appender打印一次，然后用root的再打印一次 -->
+        <Logger name="com.preshine" level="debug" additivity="true">
+            <!--<AppenderRef ref="Console"/>-->
+        </Logger>
+        <!-- 异步logger -->
+        <!--<AsyncLogger name="com.preshine" level="DEBUG" includeLocation="true">-->
+            <!--<AppenderRef ref="Console"/>-->
+        <!--</AsyncLogger>-->
+
+        <!--<asyncLogger> or <asyncRoot> 来和 logger or root混用，实现异步和非异步混合输出模式。 但是只能有一个 "root"。 -->
+        <root level="debug">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFileDebug"/>
+            <AppenderRef ref="RollingFileInfo"/>
+            <AppenderRef ref="RollingFileWarn"/>
+            <AppenderRef ref="RollingFileError"/>
+            <!--<AppenderRef ref="asyncConsole"/>-->
+        </root>
+    </loggers>
+
+</configuration>
