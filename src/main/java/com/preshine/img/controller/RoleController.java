@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -48,8 +47,7 @@ public class RoleController {
 
     @RequestMapping(value = "/list")
     @ResponseBody
-    public List<Role> list(@RequestBody Map<String, Object> requestBody,
-                           HttpServletRequest request, HttpServletResponse response) {
+    public List<Role> list(HttpServletRequest request, HttpServletResponse response) {
         return roleService.selectList(null);
     }
 
@@ -60,6 +58,7 @@ public class RoleController {
         ModelMap model = new ModelMap();
         Integer roleId = (Integer)requestBody.get("roleId");
         String name = (String)requestBody.get("name");
+        String description = (String)requestBody.get("description");
         Role role;
         String msg;
         if (roleId != null) {
@@ -69,9 +68,10 @@ public class RoleController {
             msg = "新增角色[" + name + "]成功！";
             role = new Role();
             role.setCreateTime(new Date());
-            role.setStatus(0);
+            role.setStatus(1);
         }
         role.setName(name);
+        role.setDescription(description);
         roleService.insertOrUpdate(role);
         model.put("success", true);
         model.put("message", msg);
@@ -134,6 +134,42 @@ public class RoleController {
 
         List<Resources> resources = resourcesService.selectList(new EntityWrapper<Resources>().in("id", resIds));
         return resourcesService.getResourcesTreeData(resources);
+    }
+
+    @RequestMapping(value = "/getResByRoleId")
+    @ResponseBody
+    public Map<String, Object> getResByRoleId(Integer roleId,
+                                                    HttpServletRequest request) {
+        List<RoleRes> roleRes = roleResService.selectList(new EntityWrapper<RoleRes>().where("role_id={0}", roleId));
+        List<Integer> resIds = roleRes.parallelStream().map(r -> r.getResId()).collect(Collectors.toList());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("checked", resIds);
+        result.put("halfChecked", Collections.EMPTY_LIST);
+
+        return result;
+    }
+
+    @RequestMapping(value = "/addorEditRoleRes")
+    @ResponseBody
+    public Map<String, Object> addorEditRoleRes(@RequestBody Map<String, Object> requestBody,
+                                              HttpServletRequest request) {
+        Integer roleId = (Integer)requestBody.get("roleId");
+        String res = (String)requestBody.get("res");
+
+        List<RoleRes> roleRess = Arrays.stream(res.split(",")).map(r -> {
+            RoleRes roleRes = new RoleRes();
+            roleRes.setRoleId(roleId);
+            roleRes.setResId(Integer.valueOf(r));
+            return roleRes;
+        }).collect(Collectors.toList());
+
+        roleResService.insertBatch(roleRess);
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("message", "分配资源成功");
+
+        return result;
     }
 
 
