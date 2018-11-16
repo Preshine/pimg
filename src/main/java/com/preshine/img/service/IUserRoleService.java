@@ -1,7 +1,7 @@
 package com.preshine.img.service;
 
-import com.preshine.img.entity.UserRole;
 import com.baomidou.mybatisplus.service.IService;
+import com.preshine.img.entity.UserRole;
 
 /**
  * <p>
@@ -12,5 +12,7 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2018-11-13
  */
 public interface IUserRoleService extends IService<UserRole> {
+
+
 
 }

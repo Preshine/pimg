@@ -125,15 +125,14 @@ public class RoleController {
 
     @RequestMapping(value = "/getResTreeList")
     @ResponseBody
-    public List<Map<String, Object>> getResTreeList(@RequestBody Map<String, Object> requestBody,
+    public List<Map<String, Object>> getResTreeList(Integer roleId,
                                                     HttpServletRequest request) {
-        Integer roleId = (Integer)requestBody.get("roleId");
 
         List<RoleRes> roleRes = roleResService.selectList(new EntityWrapper<RoleRes>().where("role_id={0}", roleId));
         List<Integer> resIds = roleRes.parallelStream().map(r -> r.getResId()).collect(Collectors.toList());
 
         List<Resources> resources = resourcesService.selectList(new EntityWrapper<Resources>().in("id", resIds));
-        return resourcesService.getResourcesTreeData(resources);
+        return resourcesService.getResourcesTreeData1(resources);
     }
 
     @RequestMapping(value = "/getResByRoleId")
@@ -164,6 +163,7 @@ public class RoleController {
             return roleRes;
         }).collect(Collectors.toList());
 
+        roleResService.delete(new EntityWrapper<RoleRes>().where("role_id={0}", roleId));
         roleResService.insertBatch(roleRess);
         Map<String, Object> result = new HashMap<>();
         result.put("success", true);

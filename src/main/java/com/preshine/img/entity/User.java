@@ -1,6 +1,7 @@
 package com.preshine.img.entity;
 
 import com.baomidou.mybatisplus.enums.IdType;
+import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
@@ -8,11 +9,11 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author Preshine
- * @since 2018-11-13
+ * @since 2018-11-16
  */
 public class User extends Model<User> {
 
@@ -29,9 +30,14 @@ public class User extends Model<User> {
     private String mobile;
     private String email;
     private String password;
-    private String sex;
+    private Integer sex;
     private Integer age;
     private String address;
+    private Date createTime;
+    @TableField("is_delete")
+    private Integer isDelete;
+    private Integer status;
+    private String remark;
 
 
     public Integer getId() {
@@ -90,11 +96,11 @@ public class User extends Model<User> {
         this.password = password;
     }
 
-    public String getSex() {
+    public Integer getSex() {
         return sex;
     }
 
-    public void setSex(String sex) {
+    public void setSex(Integer sex) {
         this.sex = sex;
     }
 
@@ -114,6 +120,38 @@ public class User extends Model<User> {
         this.address = address;
     }
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Integer getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(Integer isDelete) {
+        this.isDelete = isDelete;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -122,16 +160,20 @@ public class User extends Model<User> {
     @Override
     public String toString() {
         return "User{" +
-        ", id=" + id +
-        ", userAccount=" + userAccount +
-        ", userName=" + userName +
-        ", realName=" + realName +
-        ", mobile=" + mobile +
-        ", email=" + email +
-        ", password=" + password +
-        ", sex=" + sex +
-        ", age=" + age +
-        ", address=" + address +
-        "}";
+                ", id=" + id +
+                ", userAccount=" + userAccount +
+                ", userName=" + userName +
+                ", realName=" + realName +
+                ", mobile=" + mobile +
+                ", email=" + email +
+                ", password=" + password +
+                ", sex=" + sex +
+                ", age=" + age +
+                ", address=" + address +
+                ", createTime=" + createTime +
+                ", isDelete=" + isDelete +
+                ", status=" + status +
+                ", remark=" + remark +
+                "}";
     }
 }

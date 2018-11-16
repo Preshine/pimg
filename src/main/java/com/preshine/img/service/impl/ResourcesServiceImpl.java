@@ -77,4 +77,56 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
                 }).collect(Collectors.toList());
     }
 
+    public List<Map<String, Object>> getResourcesTreeData1(List<Resources> resources) {
+        return treeData1(resources);
+    }
+
+    private List<Map<String, Object>> treeData1(List<Resources> resources) {
+        List<Map<String, Object>> treeData = new ArrayList<>();
+        if (resources != null && resources.size() > 0) {
+            List<Map<String, Object>> roots = resources.stream().filter( res ->
+                resources.stream().filter( r -> r.getId().equals(res.getParentId())).count() == 0
+            ).map(res -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", res.getId());
+                map.put("parentId", res.getParentId());
+                map.put("name", res.getName());
+                map.put("key", res.getId().toString());
+                map.put("value", res.getId().toString());
+                map.put("label", res.getName());
+                return map;
+            }).collect(Collectors.toList());
+            List<Map<String, Object>> result = resources.parallelStream()
+                    .map( res -> {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("id", res.getId());
+                        map.put("parentId", res.getParentId());
+                        map.put("name", res.getName());
+                        map.put("key", res.getId().toString());
+                        map.put("value", res.getId().toString());
+                        map.put("label", res.getName());
+                        return map;
+                    }).collect(Collectors.toList());
+
+
+            roots.stream().forEach(root -> {
+                treeData.add(root);
+                getTreeData1(root, result, treeData);
+            });
+        }
+        return treeData;
+    }
+
+    private void getTreeData1(Map<String, Object> parent, List<Map<String, Object>> resources, List<Map<String, Object>> treeData) {
+
+        resources.stream()
+                .filter( res -> (parent.get("id").equals(res.get("parentId"))))
+                .forEach( res -> {
+                        List<Map<String, Object>> childrens = new ArrayList<>();
+                        childrens.add(res);
+                        parent.put("children", childrens);
+                        getTreeData1(res, resources, treeData);
+                });
+    }
+
 }

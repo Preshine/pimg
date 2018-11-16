@@ -17,5 +17,6 @@ import java.util.Map;
 public interface IResourcesService extends IService<Resources> {
 
     List<Map<String, Object>> getResourcesTreeData(List<Resources> resources);
+    List<Map<String, Object>> getResourcesTreeData1(List<Resources> resources);
 
 }
