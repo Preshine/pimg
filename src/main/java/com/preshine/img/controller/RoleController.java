@@ -107,11 +107,10 @@ public class RoleController {
         return model;
     }
 
-    @RequestMapping(value = "/getUsersByRole")
+    @RequestMapping(value = "/getUsersByrole")
     @ResponseBody
-    public List<User> getUsersByRole(@RequestBody Map<String, Object> requestBody,
+    public List<User> getUsersByRole(Integer roleId,
                            HttpServletRequest request, HttpServletResponse response) {
-        Integer roleId = (Integer)requestBody.get("roleId");
         List<UserRole> userRoles =  userRoleService.selectList(new EntityWrapper<UserRole>()
                 .where("role_id={0}", roleId));
 

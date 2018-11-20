@@ -31,4 +31,11 @@
        where u.is_delete = 0
     </select>
 
+    <select id="getUserPage" resultType="map">
+        select u.id, u.user_account as userAccount, u.user_name as userName, u.mobile, u.email,
+        u.sex, u.age, u.address, u.remark,
+        from user u
+        where u.is_delete = 0 and u.user_account in
+    </select>
+
 </mapper>
