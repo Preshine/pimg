@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50561
 File Encoding         : 65001
 
-Date: 2018-11-16 19:03:05
+Date: 2018-11-21 18:38:30
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -60,7 +60,7 @@ CREATE TABLE `role` (
   `status` int(11) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of role
@@ -69,6 +69,8 @@ INSERT INTO `role` VALUES ('1', 'admin', '系统管理员', '1', '2018-11-15 11:
 INSERT INTO `role` VALUES ('2', 'Preshine', '平台工作人员', '1', '2018-11-15 11:10:10');
 INSERT INTO `role` VALUES ('3', 'test', 'just for test ...', '0', '2018-11-15 11:29:15');
 INSERT INTO `role` VALUES ('5', 'duoduoer', '哈哈哈哈啊哈哈', '1', '2018-11-15 18:36:54');
+INSERT INTO `role` VALUES ('6', '哈哈哈', 'hahaha', '1', '2018-11-21 17:39:09');
+INSERT INTO `role` VALUES ('7', '嗯呢', null, '0', '2018-11-21 17:40:32');
 
 -- ----------------------------
 -- Table structure for role_res
@@ -137,13 +139,25 @@ CREATE TABLE `user` (
   `status` int(11) DEFAULT NULL,
   `remark` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', '1', 'admin', null, '11', '450082119@qq.com', null, '2', null, null, null, '0', null, null);
-INSERT INTO `user` VALUES ('2', '2', 'preshine', null, '666', '666@qq.com', null, '2', null, null, null, '0', null, null);
+INSERT INTO `user` VALUES ('1', '1', 'admin', null, '11', '450082119@qq.com', null, '2', null, null, '2018-11-21 16:14:48', '0', null, null);
+INSERT INTO `user` VALUES ('2', '2', 'preshine', null, '666', '666@qq.com', null, '2', null, null, '2018-11-21 16:14:51', '0', null, null);
+INSERT INTO `user` VALUES ('3', '3', '通天塔', null, '333', 'peixia_6766@163.com', null, '2', null, null, '2018-11-21 16:14:54', '0', null, null);
+INSERT INTO `user` VALUES ('4', '4', '嗯嗯嗯', null, '333', 'Preshine.6766@gamil.com', null, '2', null, null, '2018-11-21 16:14:57', '0', null, null);
+INSERT INTO `user` VALUES ('5', '5', 'admin1', null, '333', '79027068@qq.com', null, '2', null, null, '2018-11-12 16:15:00', '0', null, null);
+INSERT INTO `user` VALUES ('6', '6', 'lyfeng27@163.com', null, '33', '450082119@qq.com', null, '2', null, null, '2018-11-12 16:15:05', '0', null, null);
+INSERT INTO `user` VALUES ('7', '7', '333', null, '18565831876', '79027068@qq.com', null, '2', null, null, '2018-11-12 16:15:08', '0', null, null);
+INSERT INTO `user` VALUES ('8', '8', '333', null, '3', 'peixia_6766@163.com', null, '2', null, null, '2018-11-13 16:15:13', '0', null, null);
+INSERT INTO `user` VALUES ('9', '9', '333', null, '18565831876', 'peixia_6766@163.com', null, '2', null, null, '2018-11-06 16:15:17', '0', null, null);
+INSERT INTO `user` VALUES ('10', '10', '333', null, '33', 'peixia_6766@163.com', null, '2', null, null, '2018-11-06 16:15:21', '0', null, null);
+INSERT INTO `user` VALUES ('11', '11', '369', null, '3333', 'peixia_6766@163.com', null, '2', null, null, '2018-11-13 16:15:24', '0', null, null);
+INSERT INTO `user` VALUES ('12', '12', 'duoduo', null, '18565831876', 'lyfeng27@163.com', null, '2', null, null, '2018-11-21 16:41:01', '0', null, null);
+INSERT INTO `user` VALUES ('13', '13', 'tt', null, '18565831876', 'Preshine.6766@gamil.com', null, '2', null, null, '2018-11-21 16:41:05', '0', null, null);
+INSERT INTO `user` VALUES ('14', '14', 'dd', null, '18565831876', 'Preshine.6766@gamil.com', null, '2', null, null, '2018-11-21 16:18:18', '0', null, null);
 
 -- ----------------------------
 -- Table structure for user_role
@@ -154,12 +168,26 @@ CREATE TABLE `user_role` (
   `user_account` int(11) DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user_role
 -- ----------------------------
-INSERT INTO `user_role` VALUES ('6', '2', '5');
-INSERT INTO `user_role` VALUES ('7', '1', '2');
-INSERT INTO `user_role` VALUES ('8', '1', '1');
-INSERT INTO `user_role` VALUES ('9', '1', '3');
+INSERT INTO `user_role` VALUES ('10', '2', '1');
+INSERT INTO `user_role` VALUES ('11', '3', '1');
+INSERT INTO `user_role` VALUES ('12', '4', '1');
+INSERT INTO `user_role` VALUES ('13', '6', '1');
+INSERT INTO `user_role` VALUES ('14', '7', '1');
+INSERT INTO `user_role` VALUES ('15', '5', '1');
+INSERT INTO `user_role` VALUES ('16', '10', '1');
+INSERT INTO `user_role` VALUES ('17', '9', '1');
+INSERT INTO `user_role` VALUES ('18', '8', '1');
+INSERT INTO `user_role` VALUES ('19', '11', '1');
+INSERT INTO `user_role` VALUES ('20', '14', '2');
+INSERT INTO `user_role` VALUES ('22', '14', '2');
+INSERT INTO `user_role` VALUES ('23', '14', '1');
+INSERT INTO `user_role` VALUES ('35', '1', '7');
+INSERT INTO `user_role` VALUES ('36', '1', '6');
+INSERT INTO `user_role` VALUES ('37', '1', '2');
+INSERT INTO `user_role` VALUES ('38', '1', '1');
+INSERT INTO `user_role` VALUES ('39', '1', '3');

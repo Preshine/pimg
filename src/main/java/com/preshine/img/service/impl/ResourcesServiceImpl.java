@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources> implements IResourcesService {
 
+    @Override
     public List<Map<String, Object>> getResourcesTreeData(List<Resources> resources) {
         return treeData(resources);
     }
@@ -39,6 +40,10 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
                         map.put("key", res.getId().toString());
                         map.put("value", res.getId().toString());
                         map.put("label", res.getName());
+                        map.put("resType", res.getResType());
+                        map.put("var1", res.getVar1());
+                        map.put("var2", res.getVar2());
+                        map.put("var3", res.getVar3());
                         return map;
                     }).collect(Collectors.toList());
 
@@ -66,6 +71,10 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
                         childMap.put("key", res.get("key"));
                         childMap.put("value", res.get("value"));
                         childMap.put("label", res.get("label"));
+                        childMap.put("resType", res.get("resType"));
+                        childMap.put("var1", res.get("var1"));
+                        childMap.put("var2", res.get("var2"));
+                        childMap.put("var3", res.get("var3"));
                         childMap.put("children", getTreeData((Integer)res.get("id"), resources, treeData));
                         return childMap;
                     } else {
@@ -77,6 +86,7 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
                 }).collect(Collectors.toList());
     }
 
+    @Override
     public List<Map<String, Object>> getResourcesTreeData1(List<Resources> resources) {
         return treeData1(resources);
     }
@@ -94,6 +104,11 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
                 map.put("key", res.getId().toString());
                 map.put("value", res.getId().toString());
                 map.put("label", res.getName());
+                map.put("resType", res.getResType());
+
+                map.put("var1", res.getVar1());
+                map.put("var2", res.getVar2());
+                map.put("var3", res.getVar3());
                 return map;
             }).collect(Collectors.toList());
             List<Map<String, Object>> result = resources.parallelStream()
@@ -105,6 +120,10 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
                         map.put("key", res.getId().toString());
                         map.put("value", res.getId().toString());
                         map.put("label", res.getName());
+                        map.put("resType", res.getResType());
+                        map.put("var1", res.getVar1());
+                        map.put("var2", res.getVar2());
+                        map.put("var3", res.getVar3());
                         return map;
                     }).collect(Collectors.toList());
 

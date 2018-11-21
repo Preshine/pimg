@@ -7,6 +7,7 @@ import com.preshine.img.mapper.UserMapper;
 import com.preshine.img.service.IUserService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,9 +20,17 @@ import java.util.Map;
  */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+
     @Override
-    public Page<Map<String, Object>> getUserPage(Page page) {
-        page.setRecords(baseMapper.getUserPage(page));
+    public Page<Map<String, Object>> getUserPage(Page page, String userName, String mobile, String email, String realName, Integer sex, String sorterField, String sorterOrder) {
+        page.setRecords(baseMapper.getUserPage(page,userName, mobile, email, realName, sex, sorterField, sorterOrder));
         return page;
     }
+
+    @Override
+    public Page<Map<String, Object>> getUsersByRole(Page page, String userName, String mobile, List<Integer> userAccounts) {
+        page.setRecords(baseMapper.getUsersByRole(page, userName, mobile, userAccounts));
+        return page;
+    }
+
 }

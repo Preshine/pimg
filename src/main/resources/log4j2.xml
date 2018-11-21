@@ -9,7 +9,7 @@ when using <asyncLogger> or <asyncRoot>. -->
 <!-- OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
 <configuration status="WARN" monitorInterval="30">
     <Properties>
-        <Property name="LOG_HOME">D:/LOG1</Property>
+        <Property name="LOG_HOME">D:/LOG11</Property>
     </Properties>
 
     <appenders>

@@ -19,6 +19,10 @@ import java.util.Map;
  */
 public interface UserMapper extends BaseMapper<User> {
 
-    List<Map<String, Object>> getUserPage(@Param("pagination") Pagination pagination);
+    List<Map<String, Object>> getUserPage(@Param("pagination") Pagination pagination, @Param("userName") String userName,
+                                          @Param("mobile") String mobile, @Param("email") String email, @Param("realName") String realName,
+                                          @Param("sex") Integer sex, @Param("sorterField") String sorterField, @Param("sorterOrder") String sorterOrder);
+
+    List<Map<String, Object>> getUsersByRole(@Param("pagination") Pagination pagination, @Param("userName") String userName, @Param("mobile") String mobile, @Param("userAccounts") List<Integer> userAccounts);
 
 }

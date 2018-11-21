@@ -2,15 +2,14 @@ package com.preshine.img.controller;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.preshine.img.entity.*;
 import com.preshine.img.service.*;
+import com.preshine.img.util.Regex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -92,34 +91,57 @@ public class RoleController {
         return model;
     }
 
-    @RequestMapping(value = "/disable", method = RequestMethod.POST)
+    @RequestMapping(value = "/handleStatus", method = RequestMethod.POST)
     @ResponseBody
-    public ModelMap disable(@RequestBody Map<String, Object> requestBody,
+    public ModelMap handleStatus(@RequestBody Map<String, Object> requestBody,
                            HttpServletRequest request, HttpServletResponse response) {
         ModelMap model = new ModelMap();
         Integer roleId = (Integer)requestBody.get("roleId");
+        Integer status = (Integer)requestBody.get("status");
         Role role = roleService.selectById(roleId);
-        role.setStatus(1);
+        role.setStatus(status);
         roleService.updateById(role);
         model.put("success", true);
-        model.put("message", "删除角色[" + roleId + "]成功！");
+        model.put("message", "禁用角色[" + roleId + "]成功！");
 
         return model;
     }
 
     @RequestMapping(value = "/getUsersByrole")
     @ResponseBody
-    public List<User> getUsersByRole(Integer roleId,
+    public Map<String, Object> getUsersByRole(Integer roleId,
+                                              @RequestParam(value = "current", required = false, defaultValue = "1") Integer current,
+                                              @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+                                              @RequestParam(required = false) String mobileOrUserName,
                            HttpServletRequest request, HttpServletResponse response) {
         List<UserRole> userRoles =  userRoleService.selectList(new EntityWrapper<UserRole>()
                 .where("role_id={0}", roleId));
 
         List<Integer> userAccounts = userRoles.parallelStream().map(u -> u.getUserAccount()).collect(Collectors.toList());
 
-        List<User> users = userService.selectList(new EntityWrapper<User>()
-                .in("user_account", userAccounts));
+        String mobile = null, userName = null;
+        if (mobileOrUserName != null && !mobileOrUserName.equals("")) {
+            if (Regex.isMobile(mobileOrUserName)) {
+//                mobile = userName =  mobileOrUserName;
+                mobile =  mobileOrUserName;
+            } else {
+                userName = mobileOrUserName;
+            }
+        }
+        Page<Map<String, Object>> page = new Page<>(current, pageSize);
+        if (userAccounts != null && userAccounts.size() > 0) {
+            page = userService.getUsersByRole(page, userName, mobile, userAccounts);
+        }
+        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> pagination = new HashMap<>();
+        pagination.put("total", page.getTotal());
+        pagination.put("pageSize", page.getSize());
+        pagination.put("current", page.getCurrent());
 
-        return users;
+        result.put("list", page.getRecords());
+        result.put("pagination", pagination);
+
+        return result;
     }
 
     @RequestMapping(value = "/getResTreeList")

@@ -12,14 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,9 +40,23 @@ public class UserController {
 
     @RequestMapping(value = "/list")
     @ResponseBody
-    public Map<String, Object> list(HttpServletRequest request, HttpServletResponse response) {
-        Page<Map<String, Object>> page = new Page<>(1, 10);
-        page = userService.getUserPage(page);
+    public Map<String, Object> list(@RequestParam(value = "current", required = false, defaultValue = "1") Integer current,
+                                    @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+                                    @RequestParam(value = "sex", required = false) Integer sex,
+                                    @RequestParam(value = "userName", required = false) String userName,
+                                    @RequestParam(value = "realName", required = false) String realName,
+                                    @RequestParam(value = "mobile", required = false) String mobile,
+                                    @RequestParam(value = "email", required = false) String email,
+                                    @RequestParam(value = "sorter", required = false) String sorter,
+                                    HttpServletRequest request, HttpServletResponse response) {
+        String sorterField = null;
+        String sorterOrder = null;
+        if (sorter != null && !sorter.equals("")) {
+            sorterField = sorter.split("_")[0];
+            sorterOrder = sorter.split("_")[1];
+        }
+        Page<Map<String, Object>> page = new Page<>(current, pageSize);
+        page = userService.getUserPage(page, userName, mobile, email, realName, sex, sorterField, sorterOrder);
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> pagination = new HashMap<>();
         pagination.put("total", page.getTotal());
@@ -72,6 +84,7 @@ public class UserController {
         user.setUserName(userName);
         user.setSex(sex);
         user.setIsDelete(0);
+        user.setCreateTime(new Date());
         userService.insert(user);
 
         model.put("success", true);
@@ -89,16 +102,35 @@ public class UserController {
         String roleIds = (String)requestBody.get("roleIds");
         User user = userService.selectById(userId);
         userRoleService.delete(new EntityWrapper<UserRole>().where("user_account={0}", userId));
-        List<UserRole> userRoles =Arrays.stream(roleIds.split(",")).map(roleId -> {
-            UserRole userRole = new UserRole();
-            userRole.setUserAccount(userId);
-            userRole.setRoleId(Integer.valueOf(roleId));
-            return userRole;
-        }).collect(Collectors.toList());
-        userRoleService.insertBatch(userRoles);
+        if (roleIds != null && !roleIds.equals("")) {
+            List<UserRole> userRoles = Arrays.stream(roleIds.split(",")).map(roleId -> {
+                UserRole userRole = new UserRole();
+                userRole.setUserAccount(userId);
+                userRole.setRoleId(Integer.valueOf(roleId));
+                return userRole;
+            }).collect(Collectors.toList());
+            userRoleService.insertBatch(userRoles);
+        }
 
         model.put("success", true);
         model.put("message", "用户角色分配成功！");
+
+        return model;
+    }
+
+    @RequestMapping(value = "/delete")
+    @ResponseBody
+    public ModelMap delete(@RequestBody Map<String, Object> requestBody,
+                                 HttpServletRequest request, HttpServletResponse response) {
+        ModelMap model = new ModelMap();
+        String ids = (String)requestBody.get("ids");
+//        List<Integer> userIds =Arrays.stream(ids.split(",")).map(userId -> Integer.valueOf(userId)).collect(Collectors.toList());
+        User user = new User();
+        user.setIsDelete(1);
+        userService.update(user, new EntityWrapper<User>().in("id", ids.split(",")));
+
+        model.put("success", true);
+        model.put("message", "删除用户成功！");
 
         return model;
     }

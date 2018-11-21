@@ -21,21 +21,59 @@
     </resultMap>
 
     <select id="getUserPage" resultType="map">
-       select u.id as uid, u.user_account as userAccount, u.user_name as userName, u.mobile, u.email,
-        u.sex, u.age, u.address, u.remark, t.roleIds, t.roleNames
+       select u.id, u.user_account as userAccount, u.user_name as userName, u.mobile, u.email,
+        u.sex, u.age, u.address, u.real_name as realName, u.createTime, u.remark, t.roleIds, t.roleNames
        from user u
        left join (select ur.user_account, GROUP_CONCAT(role_id) as roleIds, GROUP_CONCAT(r.name) as roleNames
        from user_role ur
        left join role r on ur.role_id = r.id
-       group by ur.user_account) t on t.user_account = u.user_account
+       group by ur.user_account) t on t.user_account = u.id
        where u.is_delete = 0
+        <if test="userName != null and userName != ''">
+            and u.user_name like "%"#{userName}"%"
+        </if>
+        <if test="mobile != null and mobile != ''">
+            and u.mobile like "%"#{mobile}"%"
+        </if>
+        <if test="email != null and email != ''">
+            and u.email like "%"#{email}"%"
+        </if>
+        <if test="realName != null and realName != ''">
+            and u.real_name like "%"#{realName}"%"
+        </if>
+        <if test="sex != null and sex != '' or 0 == sex">
+            and u.sex = #{sex}
+        </if>
+        order by
+        <choose>
+            <when test="sorterField != null and sorterField != ''">
+                    ${sorterField}
+                    ${sorterOrder}
+            </when>
+            <otherwise>
+                u.id asc
+            </otherwise>
+        </choose>
     </select>
 
-    <select id="getUserPage" resultType="map">
+    <select id="getUsersByRole" resultType="map">
         select u.id, u.user_account as userAccount, u.user_name as userName, u.mobile, u.email,
-        u.sex, u.age, u.address, u.remark,
+        u.sex, u.age, u.address, u.remark, u.createTime
         from user u
-        where u.is_delete = 0 and u.user_account in
+        where u.is_delete = 0
+        <if test="userAccounts != null and  userAccounts.size > 0">
+            and u.user_account in
+            <foreach item="item" index="index" collection="userAccounts"
+                     open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="userName != null and userName != ''">
+            and u.user_name like "%"#{userName}"%"
+        </if>
+        <if test="mobile != null and mobile != ''">
+            and u.mobile like "%"#{mobile}"%"
+        </if>
     </select>
 
 </mapper>
