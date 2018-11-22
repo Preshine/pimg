@@ -83,6 +83,7 @@ public class UserController {
         user.setEmail(email);
         user.setUserName(userName);
         user.setSex(sex);
+        user.setAvatar("http://www.1lcj.com/static/resources/upload/image/20181122/1542849233354081608.jpg");
         user.setIsDelete(0);
         user.setCreateTime(new Date());
         userService.insert(user);

@@ -11,6 +11,7 @@
         <result column="mobile" property="mobile" />
         <result column="email" property="email" />
         <result column="password" property="password" />
+        <result column="avatar" property="avatar" />
         <result column="sex" property="sex" />
         <result column="age" property="age" />
         <result column="address" property="address" />
@@ -21,7 +22,7 @@
     </resultMap>
 
     <select id="getUserPage" resultType="map">
-       select u.id, u.user_account as userAccount, u.user_name as userName, u.mobile, u.email,
+       select u.id, u.avatar, u.user_account as userAccount, u.user_name as userName, u.mobile, u.email,
         u.sex, u.age, u.address, u.real_name as realName, u.createTime, u.remark, t.roleIds, t.roleNames
        from user u
        left join (select ur.user_account, GROUP_CONCAT(role_id) as roleIds, GROUP_CONCAT(r.name) as roleNames
@@ -57,7 +58,7 @@
     </select>
 
     <select id="getUsersByRole" resultType="map">
-        select u.id, u.user_account as userAccount, u.user_name as userName, u.mobile, u.email,
+        select u.id, u.avatar, u.user_account as userAccount, u.user_name as userName, u.mobile, u.email,
         u.sex, u.age, u.address, u.remark, u.createTime
         from user u
         where u.is_delete = 0

@@ -27,6 +27,7 @@ public class User extends Model<User> {
     private String userName;
     @TableField("real_name")
     private String realName;
+    private String avatar;
     private String mobile;
     private String email;
     private String password;
@@ -152,6 +153,14 @@ public class User extends Model<User> {
         this.remark = remark;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -167,6 +176,7 @@ public class User extends Model<User> {
                 ", mobile=" + mobile +
                 ", email=" + email +
                 ", password=" + password +
+                ", avatar=" + avatar +
                 ", sex=" + sex +
                 ", age=" + age +
                 ", address=" + address +
