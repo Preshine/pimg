@@ -3,9 +3,14 @@ package com.preshine.img.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.preshine.img.entity.*;
+import com.preshine.img.entity.Resources;
+import com.preshine.img.entity.Role;
+import com.preshine.img.entity.RoleRes;
+import com.preshine.img.entity.UserRole;
 import com.preshine.img.service.*;
 import com.preshine.img.util.Regex;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -14,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -28,6 +32,9 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/api/role")
 public class RoleController {
+
+    private static final Logger LOGGER = LogManager.getLogger(RoleController.class);
+
 
     @Autowired
     private IResourcesService resourcesService;

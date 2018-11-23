@@ -7,6 +7,8 @@ import com.preshine.img.entity.User;
 import com.preshine.img.entity.UserRole;
 import com.preshine.img.service.IUserRoleService;
 import com.preshine.img.service.IUserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -31,6 +33,9 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/api/user")
 public class UserController {
+
+    private static final Logger LOGGER = LogManager.getLogger(UserController.class);
+
 
     @Autowired
     private IUserService userService;

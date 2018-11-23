@@ -26,7 +26,7 @@ public class Resources extends Model<Resources> {
     @TableField("res_type")
     private String resType;
     private String name;
-    private String value;
+    private String path;
     @TableField("parent_id")
     private Integer parentId;
     private String var1;
@@ -74,12 +74,12 @@ public class Resources extends Model<Resources> {
         this.name = name;
     }
 
-    public String getValue() {
-        return value;
+    public String getPath() {
+        return path;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public Integer getParentId() {
@@ -158,7 +158,7 @@ public class Resources extends Model<Resources> {
         ", resCode=" + resCode +
         ", resType=" + resType +
         ", name=" + name +
-        ", value=" + value +
+        ", path=" + path +
         ", parentId=" + parentId +
         ", var1=" + var1 +
         ", var2=" + var2 +

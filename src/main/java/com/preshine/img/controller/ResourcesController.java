@@ -3,6 +3,8 @@ package com.preshine.img.controller;
 
 import com.preshine.img.entity.Resources;
 import com.preshine.img.service.IResourcesService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -29,6 +31,9 @@ import java.util.Map;
 @RequestMapping("/api/resources")
 public class ResourcesController {
 
+    private static final Logger LOGGER = LogManager.getLogger(ResourcesController.class);
+
+
     @Autowired
     private IResourcesService resourcesService;
 
@@ -45,8 +50,9 @@ public class ResourcesController {
                         HttpServletRequest request, HttpServletResponse response) {
         ModelMap model = new ModelMap();
         Integer resId = (Integer)requestBody.get("resId");
+        String parentId = requestBody.get("parentId") + "";
         String name = (String)requestBody.get("name");
-        String value = (String)requestBody.get("value");
+        String path = (String)requestBody.get("path");
         String var1 = (String)requestBody.get("var1");
         String var2 = (String)requestBody.get("var2");
         String var3 = (String)requestBody.get("var3");
@@ -60,22 +66,22 @@ public class ResourcesController {
         } else {
             msg = "新增资源[" + name + "]成功！";
             resources = new Resources();
-        }
-        if (requestBody.get("parentId") != null && !requestBody.get("parentId").equals("")) {
-            Integer parentId = Integer.valueOf((String)requestBody.get("parentId"));
-            resources.setParentId(parentId);
-        } else {
-            resources.setParentId(0);
             resources.setIsDeleted(0);
             resources.setCreateTime(new Date());
         }
-        resources.setValue(value);
+        if (parentId != null && !parentId.equals("")) {
+            resources.setParentId(Integer.valueOf(parentId));
+        } else {
+            resources.setParentId(0);
+        }
+        resources.setPath(path);
         resources.setVar1(var1);
         resources.setVar2(var2);
         resources.setVar3(var3);
         resources.setResType(resType);
         resources.setName(name);
         resourcesService.insertOrUpdate(resources);
+
         model.put("success", true);
         model.put("message", msg);
 

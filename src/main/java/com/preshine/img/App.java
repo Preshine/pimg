@@ -30,7 +30,7 @@ public class App {
 
         final Server server = new Server(port);
         final ServletContextHandler context = new ServletContextHandler();
-        context.setContextPath("/");
+        context.setContextPath("/preshine");
         server.setHandler(context);
 
 //        context.addEventListener(new ContextLoaderListener());

@@ -8,7 +8,7 @@
         <result column="res_code" property="resCode" />
         <result column="res_type" property="resType" />
         <result column="name" property="name" />
-        <result column="value" property="value" />
+        <result column="path" property="path" />
         <result column="parent_id" property="parentId" />
         <result column="var1" property="var1" />
         <result column="var2" property="var2" />
