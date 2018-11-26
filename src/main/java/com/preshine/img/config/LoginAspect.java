@@ -56,30 +56,30 @@ public class LoginAspect {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                 .getRequest();
 
-        String JSSOSESSIONID = null;
+        String PSESSIONID = null;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 String name = cookie.getName();
-                if ("JSSOSESSIONID".equals(name)) {
-                    JSSOSESSIONID = cookie.getValue();
+                if ("PSESSIONID".equals(name)) {
+                    PSESSIONID = cookie.getValue();
                     break;
                 }
             }
         }
 
-        String JSSOSESSIONID_form = getJSSOSESSIONID(request);
+        String PSESSIONID_form = getPSESSIONID(request);
 
-        if (JSSOSESSIONID_form != null && !JSSOSESSIONID_form.equals("")) {
-            JSSOSESSIONID = JSSOSESSIONID_form;
+        if (PSESSIONID_form != null && !PSESSIONID_form.equals("")) {
+            PSESSIONID = PSESSIONID_form;
         }
 
         boolean result = false;
-        // JSSOSESSIONID判断是否为空
-        if (JSSOSESSIONID == null) {
+        // PSESSIONID判断是否为空
+        if (PSESSIONID == null) {
             throw new Exception("登录超时");
         } else {
-            result = checkLogin(request, JSSOSESSIONID, systemCode);
+            result = checkLogin(request, PSESSIONID, systemCode);
             if (!result) {
                 throw new Exception("登录超时");
             }
@@ -103,14 +103,14 @@ public class LoginAspect {
      * 检查登录是否超时
      *
      * @param  request          HttpServletRequest
-     * @param  JSSOSESSIONID    String
+     * @param  PSESSIONID    String
      * @param  systemCode       String
      * @return boolean
      */
-    boolean checkLogin(HttpServletRequest request, String JSSOSESSIONID, String systemCode) throws Exception {
+    boolean checkLogin(HttpServletRequest request, String PSESSIONID, String systemCode) throws Exception {
 
         SessionUser sessionUser = null;
-        Map<String, String> obj  = cache.get(JSSOSESSIONID);
+        Map<String, String> obj  = cache.get(PSESSIONID);
         if (obj == null) {
             obj = new HashMap<>();
         }
@@ -122,13 +122,13 @@ public class LoginAspect {
 
         if (sessionUser == null) {
 
-            //sessionUser = getSessionUser(JSSOSESSIONID);
+            //sessionUser = getSessionUser(PSESSIONID);
             //if (sessionUser == null) {
                 throw new Exception("登录超时");
             //}
 
 //            obj.put("userInfo", JSON.toJSONString(sessionUser));
-//            cache.put(JSSOSESSIONID, obj);
+//            cache.put(PSESSIONID, obj);
 //            request.setAttribute("sessionUser", sessionUser);
 //
 //            return true;
@@ -139,14 +139,14 @@ public class LoginAspect {
         }
     }
 
-    public SessionUser getSessionUser(String JSSOSESSIONID) throws Exception{
+    public SessionUser getSessionUser(String PSESSIONID) throws Exception{
         SessionUser sessionUser = new SessionUser();
 //        Map<String, String> headers_map = new HashMap<String, String>();
 //        headers_map.put("Accept", "application/json, text/javascript, */*; q=0.01");
 //        headers_map.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
 //
 //        Map<String, String> paramMap = new HashMap<String, String>();
-//        paramMap.put("token", JSSOSESSIONID);
+//        paramMap.put("token", PSESSIONID);
 //        paramMap.put("systemCode", systemCode);
 //        paramMap.put("unLoginTokenId", unLoginTokenId);
 //        List<String> menuList = new ArrayList<String>();
@@ -192,7 +192,7 @@ public class LoginAspect {
         sessionUser.setUnitID(user.getInteger("defaultUnitID"));
         // 设置账户头像路径
         sessionUser.setAvatar(user.getString("avatar"));
-        sessionUser.setToken(JSSOSESSIONID);
+        sessionUser.setToken(PSESSIONID);
 
         // 获取用户权限资源
         String userPermissionStr = userObj.getString("permissions");
@@ -325,11 +325,11 @@ public class LoginAspect {
 
     /**
      *
-     * 获取jssosessionid
+     * 获取PSESSIONID
      * @param   request  HttpServletRequest
      * @return  String
      */
-    private String getJSSOSESSIONID(HttpServletRequest request) {
+    private String getPSESSIONID(HttpServletRequest request) {
 //        Map<String, String> parmMap = new HashMap<String, String>();
         //方式一：getParameterMap()，获得请求参数map
         Map<String, String[]> map = request.getParameterMap();
@@ -339,7 +339,7 @@ public class LoginAspect {
         Iterator<String> iterator = key.iterator();
         while (iterator.hasNext()) {
             String k = iterator.next();
-            if (k.equals("JSSOSESSIONID")) {
+            if (k.equals("PSESSIONID")) {
                 return map.get(k)[0];
             }
         }
@@ -354,7 +354,7 @@ public class LoginAspect {
             //值
             val = request.getParameter(parm);
 
-            if (parm.equals("JSSOSESSIONID")) {
+            if (parm.equals("PSESSIONID")) {
                 return val;
             }
         }

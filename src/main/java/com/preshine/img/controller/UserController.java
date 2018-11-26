@@ -3,7 +3,9 @@ package com.preshine.img.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.preshine.img.config.Logined;
 import com.preshine.img.config.SessionUser;
+import com.preshine.img.entity.Resources;
 import com.preshine.img.entity.User;
 import com.preshine.img.entity.UserRole;
 import com.preshine.img.service.IUserRoleService;
@@ -142,18 +144,31 @@ public class UserController {
         return model;
     }
 
+    @Logined
     @RequestMapping(value = "/currentUser")
     @ResponseBody
     public ModelMap currentUser(HttpServletRequest request) {
         ModelMap model = new ModelMap();
-        SessionUser sessionUser = request.getAttribute("sessionUser");
-//        List<Integer> userIds =Arrays.stream(ids.split(",")).map(userId -> Integer.valueOf(userId)).collect(Collectors.toList());
-        User user = new User();
-        user.setIsDelete(1);
-        userService.update(user, new EntityWrapper<User>().in("id", ids.split(",")));
+        SessionUser sessionUser = (SessionUser)request.getAttribute("sessionUser");
 
         model.put("success", true);
-        model.put("message", "删除用户成功！");
+        model.put("obj", sessionUser);
+
+        return model;
+    }
+
+    @Logined
+    @RequestMapping(value = "/getMenuData")
+    @ResponseBody
+    public ModelMap getMenuData(HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","GET,POST");        //请求放行
+        ModelMap model = new ModelMap();
+        SessionUser sessionUser = (SessionUser)request.getAttribute("sessionUser");
+        List<Resources> resources = sessionUser.getUserResources();
+
+        model.put("success", true);
+        model.put("obj", resources);
 
         return model;
     }
