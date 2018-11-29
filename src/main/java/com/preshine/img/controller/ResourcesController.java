@@ -48,6 +48,8 @@ public class ResourcesController {
     @ResponseBody
     public ModelMap addOrEdit(@RequestBody Map<String, Object> requestBody,
                         HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
         ModelMap model = new ModelMap();
         Integer resId = (Integer)requestBody.get("resId");
         String parentId = requestBody.get("parentId") + "";
@@ -87,6 +89,44 @@ public class ResourcesController {
 
         return model;
     }
+    @RequestMapping(value = "/addOrEdit1", method = RequestMethod.POST)
+    @ResponseBody
+    public ModelMap addOrEdit1(Integer resId, String parentId, String name, String path, String var1,
+                               String var2, String var3, String resType,
+                              HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
+        ModelMap model = new ModelMap();
+        Resources resources;
+        String msg;
+        if (resId != null) {
+            resources = resourcesService.selectById(resId);
+            resources.setUpdateTime(new Date());
+            msg = "修改资源[" + name + "]成功！";
+        } else {
+            msg = "新增资源[" + name + "]成功！";
+            resources = new Resources();
+            resources.setIsDeleted(0);
+            resources.setCreateTime(new Date());
+        }
+        if (parentId != null && !parentId.equals("")) {
+            resources.setParentId(Integer.valueOf(parentId));
+        } else {
+            resources.setParentId(0);
+        }
+        resources.setPath(path);
+        resources.setVar1(var1);
+        resources.setVar2(var2);
+        resources.setVar3(var3);
+        resources.setResType(resType);
+        resources.setName(name);
+        resourcesService.insertOrUpdate(resources);
+
+        model.put("success", true);
+        model.put("message", msg);
+
+        return model;
+    }
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
@@ -94,6 +134,20 @@ public class ResourcesController {
                            HttpServletRequest request, HttpServletResponse response) {
         ModelMap model = new ModelMap();
         Integer resId = (Integer)requestBody.get("resId");
+        resourcesService.deleteById(resId);
+        model.put("success", true);
+        model.put("message", "删除资源[" + resId + "]成功！");
+
+        return model;
+    }
+
+    @RequestMapping(value = "/delete1", method = RequestMethod.POST)
+    @ResponseBody
+    public ModelMap delete1(Integer resId,
+                           HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
+        ModelMap model = new ModelMap();
         resourcesService.deleteById(resId);
         model.put("success", true);
         model.put("message", "删除资源[" + resId + "]成功！");
