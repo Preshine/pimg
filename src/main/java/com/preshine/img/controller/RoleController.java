@@ -54,6 +54,8 @@ public class RoleController {
     @RequestMapping(value = "/list")
     @ResponseBody
     public List<Role> list(HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
         return roleService.selectList(null);
     }
 
