@@ -87,6 +87,33 @@ public class RoleController {
         return model;
     }
 
+    @RequestMapping(value = "/addOrEdit1", method = RequestMethod.POST)
+    @ResponseBody
+    public ModelMap addOrEdit1(Integer roleId, String name, String description,
+                              HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
+        ModelMap model = new ModelMap();
+        Role role;
+        String msg;
+        if (roleId != null) {
+            role = roleService.selectById(roleId);
+            msg = "修改角色[" + name + "]成功！";
+        } else {
+            msg = "新增角色[" + name + "]成功！";
+            role = new Role();
+            role.setCreateTime(new Date());
+            role.setStatus(1);
+        }
+        role.setName(name);
+        role.setDescription(description);
+        roleService.insertOrUpdate(role);
+        model.put("success", true);
+        model.put("message", msg);
+
+        return model;
+    }
+
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
     public ModelMap delete(@RequestBody Map<String, Object> requestBody,

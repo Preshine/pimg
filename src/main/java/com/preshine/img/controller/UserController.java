@@ -5,11 +5,8 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.preshine.img.config.Logined;
 import com.preshine.img.config.SessionUser;
-import com.preshine.img.entity.Resources;
-import com.preshine.img.entity.User;
-import com.preshine.img.entity.UserRole;
-import com.preshine.img.service.IUserRoleService;
-import com.preshine.img.service.IUserService;
+import com.preshine.img.entity.*;
+import com.preshine.img.service.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +41,17 @@ public class UserController {
     private IUserService userService;
 
     @Autowired
+    private IRoleService roleService;
+
+    @Autowired
     private IUserRoleService userRoleService;
+
+    @Autowired
+    private IRoleResService roleResService;
+
+    @Autowired
+    private IResourcesService resourcesService;
+
 
     @RequestMapping(value = "/list")
     @ResponseBody
@@ -158,9 +165,9 @@ public class UserController {
     }
 
     @Logined
-    @RequestMapping(value = "/getMenuData")
+    @RequestMapping(value = "/getMenuData1")
     @ResponseBody
-    public ModelMap getMenuData(HttpServletRequest request, HttpServletResponse response) {
+    public ModelMap getMenuData1(HttpServletRequest request, HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin","*");
         response.setHeader("Access-Control-Allow-Methods","GET,POST");        //请求放行
         ModelMap model = new ModelMap();
@@ -169,6 +176,31 @@ public class UserController {
 
         model.put("success", true);
         model.put("obj", resources);
+
+        return model;
+    }
+
+    @Logined
+    @RequestMapping(value = "/getMenuData")
+    @ResponseBody
+    public ModelMap getMenuData(HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","GET,POST");        //请求放行
+        ModelMap model = new ModelMap();
+        SessionUser sessionUser = (SessionUser)request.getAttribute("sessionUser");
+        List<UserRole> userRoles = userRoleService.selectList(new EntityWrapper<UserRole>()
+                .where("user_account={0}", sessionUser.getAccountId()));
+
+        if (userRoles != null && userRoles.size() > 0) {
+            List<Integer> roleIds = userRoles.parallelStream().map(r -> r.getRoleId()).collect(Collectors.toList());
+            List<RoleRes> roleRes = roleResService.selectList(new EntityWrapper<RoleRes>().in("role_id",roleIds));
+            List<Integer> resIds = roleRes.parallelStream().map(r -> r.getResId()).collect(Collectors.toList());
+            List<Resources> resources = resourcesService.selectList(new EntityWrapper<Resources>().in("id", resIds));
+
+            model.put("obj", resources);
+        }
+
+        model.put("success", true);
 
         return model;
     }
