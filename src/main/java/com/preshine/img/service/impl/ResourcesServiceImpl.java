@@ -37,6 +37,7 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
                         map.put("id", res.getId());
                         map.put("parentId", res.getParentId());
                         map.put("name", res.getName());
+                        map.put("text", res.getName());
                         map.put("key", res.getId().toString());
                         map.put("value", res.getId().toString());
                         map.put("label", res.getName());
@@ -68,6 +69,7 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
                         childMap.put("id", res.get("id"));
                         childMap.put("parentId", res.get("parentId"));
                         childMap.put("name", res.get("name"));
+                        childMap.put("text", res.get("text"));
                         childMap.put("key", res.get("key"));
                         childMap.put("value", res.get("value"));
                         childMap.put("label", res.get("label"));
@@ -101,6 +103,7 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
                 map.put("id", res.getId());
                 map.put("parentId", res.getParentId());
                 map.put("name", res.getName());
+                map.put("text", res.getName());
                 map.put("key", res.getId().toString());
                 map.put("value", res.getId().toString());
                 map.put("label", res.getName());
@@ -117,6 +120,7 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
                         map.put("id", res.getId());
                         map.put("parentId", res.getParentId());
                         map.put("name", res.getName());
+                        map.put("text", res.getName());
                         map.put("key", res.getId().toString());
                         map.put("value", res.getId().toString());
                         map.put("label", res.getName());
@@ -141,10 +145,15 @@ public class ResourcesServiceImpl extends ServiceImpl<ResourcesMapper, Resources
         resources.stream()
                 .filter( res -> (parent.get("id").equals(res.get("parentId"))))
                 .forEach( res -> {
-                        List<Map<String, Object>> childrens = new ArrayList<>();
-                        childrens.add(res);
-                        parent.put("children", childrens);
-                        getTreeData1(res, resources, treeData);
+                    List<Map<String, Object>> childrens;
+                    if (parent.get("children") != null) {
+                        childrens = (List<Map<String, Object>>) parent.get("children");
+                    } else {
+                        childrens = new ArrayList<>();
+                    }
+                    childrens.add(res);
+                    parent.put("children", childrens);
+                    getTreeData1(res, resources, treeData);
                 });
     }
 

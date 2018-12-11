@@ -192,6 +192,15 @@ public class RoleController {
         return resourcesService.getResourcesTreeData1(resources);
     }
 
+    @RequestMapping(value = "/getResTreeList1")
+    @ResponseBody
+    public List<Map<String, Object>> getResTreeList1(HttpServletRequest request,HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
+        List<Resources> resources = resourcesService.selectList(null);
+        return resourcesService.getResourcesTreeData1(resources);
+    }
+
     @RequestMapping(value = "/getResByRoleId")
     @ResponseBody
     public Map<String, Object> getResByRoleId(Integer roleId,
