@@ -83,6 +83,38 @@ public class UserController {
         return result;
     }
 
+    @RequestMapping(value = "/list1")
+    @ResponseBody
+    public Map<String, Object> list1(@RequestParam(value = "current", required = false, defaultValue = "1") Integer current,
+                                    @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+                                    @RequestParam(value = "sex", required = false) Integer sex,
+                                    @RequestParam(value = "userName", required = false) String userName,
+                                    @RequestParam(value = "realName", required = false) String realName,
+                                    @RequestParam(value = "mobile", required = false) String mobile,
+                                    @RequestParam(value = "email", required = false) String email,
+                                    @RequestParam(value = "sorter", required = false) String sorter,
+                                    HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
+        String sorterField = null;
+        String sorterOrder = null;
+        if (sorter != null && !sorter.equals("")) {
+            sorterField = sorter.split("_")[0];
+            sorterOrder = sorter.split("_")[1];
+        }
+        Page<Map<String, Object>> page = new Page<>(current, pageSize);
+        page = userService.getUserPage(page, userName, mobile, email, realName, sex, sorterField, sorterOrder);
+        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> pagination = new HashMap<>();
+        pagination.put("total", page.getTotal());
+        pagination.put("pageSize", page.getSize());
+        pagination.put("current", page.getCurrent());
+
+        result.put("rows", page.getRecords());
+        result.put("total", page.getTotal());
+        return result;
+    }
+
     @RequestMapping(value = "/add")
     @ResponseBody
     public ModelMap add(@RequestBody Map<String, Object> requestBody,
