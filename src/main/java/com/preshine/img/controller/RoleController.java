@@ -116,7 +116,21 @@ public class RoleController {
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
-    public ModelMap delete(@RequestBody Map<String, Object> requestBody,
+    public ModelMap delete(Integer roleId,
+                           HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
+        ModelMap model = new ModelMap();
+        roleService.deleteById(roleId);
+        model.put("success", true);
+        model.put("message", "删除角色[" + roleId + "]成功！");
+
+        return model;
+    }
+
+    @RequestMapping(value = "/delete1", method = RequestMethod.POST)
+    @ResponseBody
+    public ModelMap delete1(@RequestBody Map<String, Object> requestBody,
                            HttpServletRequest request, HttpServletResponse response) {
         ModelMap model = new ModelMap();
         Integer roleId = (Integer)requestBody.get("roleId");
@@ -139,6 +153,22 @@ public class RoleController {
         roleService.updateById(role);
         model.put("success", true);
         model.put("message", "禁用角色[" + roleId + "]成功！");
+
+        return model;
+    }
+
+    @RequestMapping(value = "/handleStatus1", method = RequestMethod.POST)
+    @ResponseBody
+    public ModelMap handleStatus1(Integer roleId, Integer status,
+                                 HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
+        ModelMap model = new ModelMap();
+        Role role = roleService.selectById(roleId);
+        role.setStatus(status);
+        roleService.updateById(role);
+        model.put("success", true);
+        model.put("message", "禁用/启用角色[" + roleId + "]成功！");
 
         return model;
     }
@@ -215,6 +245,21 @@ public class RoleController {
         return result;
     }
 
+    @RequestMapping(value = "/getResByRoleId1")
+    @ResponseBody
+    public Map<String, Object> getResByRoleId1(Integer roleId,
+                                              HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
+        List<RoleRes> roleRes = roleResService.selectList(new EntityWrapper<RoleRes>().where("role_id={0}", roleId));
+        List<Integer> resIds = roleRes.parallelStream().map(r -> r.getResId()).collect(Collectors.toList());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("checked", resIds);
+        return result;
+    }
+
+
     @RequestMapping(value = "/addorEditRoleRes")
     @ResponseBody
     public Map<String, Object> addorEditRoleRes(@RequestBody Map<String, Object> requestBody,
@@ -222,6 +267,29 @@ public class RoleController {
         Integer roleId = (Integer)requestBody.get("roleId");
         String res = (String)requestBody.get("res");
 
+        List<RoleRes> roleRess = Arrays.stream(res.split(",")).map(r -> {
+            RoleRes roleRes = new RoleRes();
+            roleRes.setRoleId(roleId);
+            roleRes.setResId(Integer.valueOf(r));
+            return roleRes;
+        }).collect(Collectors.toList());
+
+        roleResService.delete(new EntityWrapper<RoleRes>().where("role_id={0}", roleId));
+        roleResService.insertBatch(roleRess);
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("message", "分配资源成功");
+
+        return result;
+    }
+
+    @RequestMapping(value = "/addorEditRoleRes1")
+    @ResponseBody
+    public Map<String, Object> addorEditRoleRes1(Integer roleId, String res,
+                                                HttpServletRequest request, HttpServletResponse response) {
+
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
         List<RoleRes> roleRess = Arrays.stream(res.split(",")).map(r -> {
             RoleRes roleRes = new RoleRes();
             roleRes.setRoleId(roleId);
