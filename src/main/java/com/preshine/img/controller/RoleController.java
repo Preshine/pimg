@@ -210,6 +210,40 @@ public class RoleController {
         return result;
     }
 
+    @RequestMapping(value = "/getUsersByrole1")
+    @ResponseBody
+    public Map<String, Object> getUsersByRole1(Integer roleId,
+                                              @RequestParam(value = "current", required = false, defaultValue = "1") Integer current,
+                                              @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize,
+                                              @RequestParam(required = false) String mobileOrUserName,
+                                              HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
+        List<UserRole> userRoles =  userRoleService.selectList(new EntityWrapper<UserRole>()
+                .where("role_id={0}", roleId));
+
+        List<Integer> userAccounts = userRoles.parallelStream().map(u -> u.getUserAccount()).collect(Collectors.toList());
+
+        String mobile = null, userName = null;
+        if (mobileOrUserName != null && !mobileOrUserName.equals("")) {
+            if (Regex.isMobile(mobileOrUserName)) {
+//                mobile = userName =  mobileOrUserName;
+                mobile =  mobileOrUserName;
+            } else {
+                userName = mobileOrUserName;
+            }
+        }
+        Page<Map<String, Object>> page = new Page<>(current, pageSize);
+        if (userAccounts != null && userAccounts.size() > 0) {
+            page = userService.getUsersByRole(page, userName, mobile, userAccounts);
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put("rows", page.getRecords());
+        result.put("total", page.getTotal());
+
+        return result;
+    }
+
     @RequestMapping(value = "/getResTreeList")
     @ResponseBody
     public List<Map<String, Object>> getResTreeList(Integer roleId,
