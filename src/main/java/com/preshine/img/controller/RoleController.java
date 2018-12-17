@@ -227,8 +227,7 @@ public class RoleController {
         String mobile = null, userName = null;
         if (mobileOrUserName != null && !mobileOrUserName.equals("")) {
             if (Regex.isMobile(mobileOrUserName)) {
-//                mobile = userName =  mobileOrUserName;
-                mobile =  mobileOrUserName;
+                mobile = userName =  mobileOrUserName;
             } else {
                 userName = mobileOrUserName;
             }
@@ -258,11 +257,15 @@ public class RoleController {
 
     @RequestMapping(value = "/getResTreeList1")
     @ResponseBody
-    public List<Map<String, Object>> getResTreeList1(HttpServletRequest request,HttpServletResponse response) {
+    public List<Resources> getResTreeList1(Integer roleId,
+                                                    HttpServletRequest request, HttpServletResponse response) {
         response.setHeader("Access-Control-Allow-Origin","*");
         response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
-        List<Resources> resources = resourcesService.selectList(null);
-        return resourcesService.getResourcesTreeData1(resources);
+        List<RoleRes> roleRes = roleResService.selectList(new EntityWrapper<RoleRes>().where("role_id={0}", roleId));
+        List<Integer> resIds = roleRes.parallelStream().map(r -> r.getResId()).collect(Collectors.toList());
+
+        List<Resources> resources = resourcesService.selectList(new EntityWrapper<Resources>().in("id", resIds));
+        return resources;
     }
 
     @RequestMapping(value = "/getResByRoleId")
@@ -290,6 +293,26 @@ public class RoleController {
 
         Map<String, Object> result = new HashMap<>();
         result.put("checked", resIds);
+        return result;
+    }
+
+    @RequestMapping(value = "/getRoleDetail")
+    @ResponseBody
+    public Map<String, Object> getRoleDetail(Integer roleId,
+                                               HttpServletRequest request, HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Methods","OPTIONS,GET,POST");        //请求放行
+
+        Role role = roleService.selectById(roleId);
+        List<UserRole> userRoles =  userRoleService.selectList(new EntityWrapper<UserRole>()
+                .where("role_id={0}", roleId));
+        List<RoleRes> roleRes = roleResService.selectList(new EntityWrapper<RoleRes>()
+                .where("role_id={0}", roleId));
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("role", role);
+        result.put("roleResSize", roleRes.size());
+        result.put("userRolesSize", userRoles.size());
         return result;
     }
 

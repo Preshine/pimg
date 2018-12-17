@@ -69,12 +69,20 @@
                 #{item}
             </foreach>
         </if>
-        <if test="userName != null and userName != ''">
-            and u.user_name like "%"#{userName}"%"
-        </if>
-        <if test="mobile != null and mobile != ''">
-            and u.mobile like "%"#{mobile}"%"
-        </if>
+        <choose>
+            <when test="userName != null and userName != '' and mobile != null and mobile != ''">
+                and (u.user_name like "%"#{userName}"%" or u.mobile like "%"#{mobile}"%")
+            </when>
+            <otherwise>
+                <if test="userName != null and userName != ''">
+                    and u.user_name like "%"#{userName}"%"
+                </if>
+                <if test="mobile != null and mobile != ''">
+                    and u.mobile like "%"#{mobile}"%"
+                </if>
+            </otherwise>
+        </choose>
+
     </select>
 
 </mapper>
